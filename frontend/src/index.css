@@ -1,0 +1,103 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+body {
+  margin: 0;
+  padding: 0;
+  background: #f1f1f1;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+    sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+code {
+  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
+    monospace;
+}
+
+input:focus + label, input:not(:placeholder-shown) + label {
+  transform: translate(-30%, -120%) scale(0.75);
+  background-color: white;
+  color: #1a73e8;
+  padding-left: 5px;
+  padding-right: 5px;
+  margin: 1px;
+}
+
+.dark input:focus + label, .dark input:not(:placeholder-shown) + label {
+  background-color: #1f2937; 
+  color: #1a73e8; 
+}
+
+.fade-enter {
+  opacity: 0;  
+  position: relative;
+  width: 100%;
+  height: 100%;
+}
+
+.fade-enter-active {
+  opacity: 1;
+  transition: opacity 300ms;
+}
+
+.fade-exit {
+  z-index: 0;
+}
+
+.fade-exit-active {
+  opacity: 0;
+  transition: opacity 300ms;
+}
+
+
+.page {
+  opacity: 0;
+  transition: opacity 1s ease-in-out;
+}
+
+.page.loaded {
+  opacity: 1;
+}
+
+.unique-class * {
+  color: white !important;
+}
+
+hr{
+  border: 0;
+  height: 1px;
+  background: #333;
+  background-image: linear-gradient(to right, #ccc, #333, #ccc);
+}
+
+.navbar{
+  position: fixed;
+  top: 0;
+  width: 100%;
+  z-index: 100;  
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+}
+
+.logo-size-navbar{
+  width: 50px;
+  height: 50px;
+}
+
+
+.logo-size{
+  width: 100px;
+  height: 100px;
+}
+
+.logo-size-adminDashboard{
+  width: 60px;
+  height: 60px;
+}
+
+.custom-overlay-dark {
+  background: rgba(0, 0, 0, 0.788) !important; /* Para el modo oscuro */
+}

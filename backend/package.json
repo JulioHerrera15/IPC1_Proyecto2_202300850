@@ -1,0 +1,26 @@
+{
+  "name": "conferencia-ipc1-2024",
+  "version": "1.0.0",
+  "description": "En términos de informática, un CRUD es el acrónimo de \"CREATE, READ, UPDATE y DELETE\", las cuales son las funciones básicas para la persistencia de datos en un software.",
+  "main": "index.js",
+  "scripts": {
+    "tsc": "tsc",
+    "dev": "ts-node-dev src/index.ts",
+    "start": "node src/index.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "@types/cors": "^2.8.17",
+    "@types/express": "^4.17.21",
+    "ts-node-dev": "^2.0.0",
+    "typescript": "^5.4.5"
+  },
+  "dependencies": {
+    "cors": "^2.8.5",
+    "dotenv": "^16.4.5",
+    "express": "^4.19.2"
+  }
+}

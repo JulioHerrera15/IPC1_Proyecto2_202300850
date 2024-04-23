@@ -1,0 +1,7 @@
+{
+  "dependencies": {
+    "prop-types": "^15.8.1",
+    "react-confirm-alert": "^3.0.6",
+    "react-toastify": "^10.0.5"
+  }
+}
