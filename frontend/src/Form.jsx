@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react';
-import axios from 'axios';
 import { FaUser, FaKey } from "react-icons/fa";
 import { Link } from 'react-router-dom';
 import { IoIosArrowBack } from "react-icons/io";
@@ -8,7 +7,7 @@ import './index.css';
 import { useNavigate } from 'react-router-dom';
 
 const Form = ({ darkMode, toggleDarkMode }) => {
-  const [username, setUsername] = useState('');
+  const [carnet, setCarnet] = useState('');
   const [password, setPassword] = useState('');
   const [errorMessage, setErrorMessage] = useState('');
   const [serverMessage, setServerMessage] = useState('');
@@ -16,32 +15,38 @@ const Form = ({ darkMode, toggleDarkMode }) => {
 
   const handleSubmit = async (event) => {
     event.preventDefault();
-
-    if(username === '' || password === '') {
-      setErrorMessage('Por favor, llena ambos campos')
-    } else {
-      try {
-        const response = await axios.post('http://localhost:3000/getCustomers', {
-          username,
-          password,
-        });
-
-        if (response.data.success) {          
-          localStorage.setItem('token', response.data.token);          
-          // Comprueba si el usuario es un administrador
-          if (response.data.isAdmin) {
-            navigate('/admin'); // Redirige al usuario a la página de administrador
-          } else {
-            navigate('/user-home'); // Redirige al usuario a la página de usuario
-          }
-        } else {
-          setServerMessage(response.data.message); // Almacena el mensaje del servidor
-        }
-      } catch (error) {
-        console.error('Error during login', error);        
-      }
+    const data = {
+      carnet,
+      password
     }
-  };
+    try {
+      const response = await fetch('http://localhost:3000/login', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(data)
+      });
+  
+      if (response.status === 404) {
+        // Las credenciales son incorrectas, muestra un mensaje de error
+        setErrorMessage('Usuario o contraseña incorrectos');
+        return;
+      }
+  
+      const result = await response.json();
+      localStorage.setItem('user', JSON.stringify(result));
+      if(result.isAdmin){
+        navigate('/admin');
+      }else{
+        navigate('/user-home');
+      }
+    } catch (error) {
+      const result = JSON.parse(error.message);
+      setServerMessage(result.message);
+    }
+  }
+
   let [isLoaded, setIsLoaded] = useState(false);
   
   useEffect(() => {
@@ -63,8 +68,8 @@ const Form = ({ darkMode, toggleDarkMode }) => {
             <input
               className='w-full border-2 border-gray-100 dark:border-gray-900 rounded-xl p-4 mt-1 bg-transparent pl-10 focus:border-blue-500 transition-colors mt5'
               placeholder=' '
-              value={username}
-              onChange={(e) => setUsername(e.target.value)}
+              value={carnet}
+              onChange={(e) => setCarnet(e.target.value)}
             />            
             <label className="absolute left-12 top-5 transition-transform duration-200 ease-in-out transform-gpu pointer-events-none" htmlFor="input">
               No. carnet/Código USAC

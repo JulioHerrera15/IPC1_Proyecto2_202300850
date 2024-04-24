@@ -317,7 +317,7 @@ const EditUser = ({ darkMode, toggleDarkMode, children }) => {
                   type="submit"
                   className="bg-blue-500 text-white p-2 rounded-md"
                 >
-                  Guardar
+                  Actualizar usuario
                 </button>
             </div>
           </form>

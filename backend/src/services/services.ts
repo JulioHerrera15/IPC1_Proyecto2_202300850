@@ -1,8 +1,10 @@
-import { dataCustomers } from "./data";
-import { CustomerData, CustomerEntry } from "../types"
-
+import { dataCustomers, dataAdmin } from "./data";
+import { CustomerData, CustomerEntry, AdminData } from "../types"
+import env from 'dotenv';
+env.config();
 
 export var customerData = dataCustomers;
+export var adminData = dataAdmin;
 
 export const getCustomers = () => dataCustomers
 
@@ -44,5 +46,19 @@ export const deleteCustomer = (id: number) => {
     return true;
 }
 
+export const login = (carnet: string , password: string) => {
+    const customer = customerData.find(c => c.carnet === carnet && c.password === password);    
+    if(!customer){
+        return null;
+    }
+    return customer;
+}
 
+export const loginAdmin = (username: string, password: string) => {
+    const admin = adminData.find(a => a.username === username && a.password === password);
+    if(!admin){
+        return null;
+    }
+    return admin;
+}
 

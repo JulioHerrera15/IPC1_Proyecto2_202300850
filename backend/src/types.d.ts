@@ -17,6 +17,11 @@ export interface PostsEntry {
     fecha: string;
 }
 
+export interface AdminData{
+    username: string;
+    password: string;
+}
+
 export interface CustomerData extends CustomerEntry {
     id: number;
 }

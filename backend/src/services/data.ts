@@ -1,4 +1,7 @@
 import { CustomerData } from "../types"
+import { AdminData } from "../types"
+
+
 
 export var data1 = [
     1,2,3,4
@@ -14,4 +17,9 @@ export var dataCustomers: Array<CustomerData> = [{
     "carrera": "Ciencias y Sistemas",
     "correo": "mbackhouse0@tripod.com",
     "password": "@sijgd58186/"
+  }]
+
+export var dataAdmin: Array<AdminData> = [{
+    "username": "12024",
+    "password": "@dminIPC1"
   }]

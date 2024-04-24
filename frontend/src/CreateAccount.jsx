@@ -101,10 +101,7 @@ export default function CreateAccount({ darkMode, toggleDarkMode }) {
             toast.error('Error al registrar el usuario: ' + error.message, {
                 theme: darkMode ? 'dark': 'light'
             });
-        }   
-        
-        
-
+        }
     };
 
     const hasAnyError = Object.values(hasError).some(error => error === true);

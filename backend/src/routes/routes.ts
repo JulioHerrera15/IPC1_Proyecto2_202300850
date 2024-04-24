@@ -1,5 +1,5 @@
 import express from 'express';
-import { getCustomer,addCustomer, getCustomers, updateCustomer, deleteCustomer } from '../services/services';
+import { getCustomer,addCustomer, getCustomers, updateCustomer, deleteCustomer, login, loginAdmin } from '../services/services';
 import { CustomerData, CustomerEntry } from '../types';
 
 const router = express.Router();
@@ -77,5 +77,20 @@ router.delete('/deleteCustomer/:id',(req, res) => {
     }
 });
 
+
+router.post('/login', (req, res) => {
+    const {carnet, password} = req.body;
+    const admin = loginAdmin(carnet, password);
+    if(admin){
+        res.send({...admin, isAdmin: true});
+        return;
+    }
+    const customer = login(carnet, password);
+    if(customer){
+        res.send({...customer, isAdmin: false});
+        return;
+    }
+    res.status(404).send({message: 'Credenciales incorrectas'});
+})
 
 export default router;

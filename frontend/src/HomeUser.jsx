@@ -1,75 +1,51 @@
 import React, { useState, useEffect } from 'react'
-import axios from 'axios'
 import UserFrameSideBar from './UserFrameSideBar'
 import './index.css';
 
-function HomeUser() {
-  const {descripcion, setDescripcion} = useState('')
-  const {categoria, setCategoria} = useState('')
-  const {imagen, setImagen} = useState('')
-  const {anonimo, setAnonimo} = useState(false)
-  const [publicaciones, setPublicaciones] = useState([])
-
-  useEffect(() => {
-    const token = localStorage.getItem('token');
-    if (!token) {
-      window.location.href = '/login';
-    }
-
-    const fetchPublicaciones = async () => {
-      try {
-        const response = await axios.get('/api/posts', {
-          headers: {
-            'Authorization': `Bearer ${token}`
-          }
-        });
-        setPublicaciones(response.data);
-        console.log(response.data);
-      } catch (error) {
-        console.error(error);
-      }
-    }
-    fetchPublicaciones(); 
-  }, []);
-
-  const handleSubmit = async (e) => {
-    e.preventDefault()
-    const token = localStorage.getItem('token');
-    try{
-      const response = await axios.post('/api/posts', {
-        descripcion,
-        categoria,
-        imagen,
-        anonimo
-      }, {
+function HomeUser() {    
+  const [nombres, setNombres] = useState('');
+  
+  
+  const getUser = async () => {
+    const user = JSON.parse(localStorage.getItem('user')); 
+    const userId = user.id;    
+  
+    try {
+      const response = await fetch(`http://localhost:3000/getCustomer/${userId}`, {
+        method: 'GET',
         headers: {
-          'Authorization': `Bearer ${token}`
+          'Content-Type': 'application/json'
         }
       });
-      console.log(response.data);
-
+  
+      if (!response.ok) {        
+        console.error('Error al obtener el usuario:', response.status);
+        return;
+      }
+  
+      const result = await response.json();      
+      setNombres(result.nombres)
     } catch (error) {
-      console.error(error);
-    }  
+      console.log(error);
+    }
+  }
+
+  useEffect(() => {
+    getUser();
+  }, []);  
+
+  return(
+
+    <div>
+      <UserFrameSideBar />
+      <h1>Bienvenido {nombres}</h1>
+    </div>
+  );   
 
     
   };
 
-  return (
-    <div>
-    <UserFrameSideBar />
-    <div className='flex justify-center'>
-        {publicaciones.map((publicacion, index) => (
-          <div key={index}>
-            <p>{publicacion.descripcion}</p>
-            <p>{publicacion.categoria}</p>
-            <p>{publicacion.imagen}</p>
-            <p>{publicacion.anonimo}</p>
-          </div>          
-        ))}
-      </div>
-    </div>  
-  )
-}
+  
+
 
 export default HomeUser

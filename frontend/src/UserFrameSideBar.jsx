@@ -54,7 +54,7 @@ function UserFrameSideBar({ darkMode, toggleDarkMode }) {
                 className={`md:flex pl-9 md:pl-0 md:items-center md:justify-center md:static md:pb-0 pb-12 absolute md:z-auto z-[-1] left-0 w-full md:w-auto transition-all bg-white dark:bg-slate-700 ease-in duration-500`}
               >
                 {Links.map((link) => (
-                  <li className="font-semibold my-7 md:my-0 md:ml-8 hover:text-blue-500">
+                  <li key={link.name} className="font-semibold my-7 md:my-0 md:ml-8 hover:text-blue-500">
                     <div className="items-center justify-center text-center flex">
                       {link.icon}
                     </div>
