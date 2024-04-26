@@ -1,5 +1,5 @@
 import express from 'express';
-import { getCustomer,addCustomer, getCustomers, updateCustomer, deleteCustomer, login, loginAdmin } from '../services/services';
+import { getCustomer,addCustomer, getCustomers, updateCustomer, deleteCustomer, login, loginAdmin, crearPublicacion, getPublicaciones } from '../services/services';
 import { CustomerData, CustomerEntry } from '../types';
 
 const router = express.Router();
@@ -46,6 +46,7 @@ router.post('/addCustomer', async (req, res) => {
 
     // Si el carnet no existe, agrega el cliente
     addCustomer(newCustomer);
+    console.log(getCustomers());
     res.send({message: 'Se agregó el usuario correctamente'});
 });
 
@@ -91,6 +92,35 @@ router.post('/login', (req, res) => {
         return;
     }
     res.status(404).send({message: 'Credenciales incorrectas'});
+})
+
+router.post('/crearPublicacion/:id', (req, res) => {
+    const newPublicacion = req.body;
+    const userId = parseInt(req.params.id);
+    const user = getCustomer(userId);
+    if(!user){
+        res.status(404).send('User not found');
+    }else{
+        const autor = user.nombres;
+        crearPublicacion(newPublicacion, autor);
+        res.send({message: 'Se creó la publicación correctamente'});
+    }
+})
+
+router.get('/getPublicaciones', (req, res) => {
+    const publicaciones = getPublicaciones();
+    res.send(publicaciones);
+})
+
+router.put('/updateLikes/:id', (req, res) => {
+    const id = parseInt(req.params.id);
+    const publicacion = getPublicaciones().find(publicacion => publicacion.id === id);
+    if(!publicacion){
+        res.status(404).send('Publicacion not found');
+    }else{
+        publicacion.likes++;
+        res.send({message: 'Se actualizó el like correctamente'});
+    }
 })
 
 export default router;

@@ -9,6 +9,18 @@ import imgUser from "./assets/user.png";
 import "./index.css";
 
 function UserFrameSideBar({ darkMode, toggleDarkMode }) {
+
+  const getUser = () => {
+    let user = localStorage.getItem("user");
+    if (user) {
+      return JSON.parse(user);
+    } else {
+      return undefined;
+    }
+  };
+
+  let user = getUser();
+  let userId = user ? user.id : undefined;
   let Links = [
     {
       name: "Inicio",
@@ -17,7 +29,7 @@ function UserFrameSideBar({ darkMode, toggleDarkMode }) {
     },
     {
       name: "Crear Publicación",
-      link: "/crearpost",
+      link:`/crearpost/${userId}`,
       icon: <MdPostAdd className="text-blue-500 text-xl" />,
     },
     {
@@ -75,23 +87,7 @@ function UserFrameSideBar({ darkMode, toggleDarkMode }) {
             </div>
           </div>
         </div>
-      </div>
-      <div></div>
-      <div className="bg-gray-900 dark:bg-slate-900">
-        <div className="flex items-center justify-center h-20">
-          <p className="text-white dark:text-gray-400">
-            © 2021 <span className="text-blue-500">U</span>Social. Todos los
-            derechos reservados.
-          </p>
-          <div className="scale-75 text-white unique-class">
-            <ColorModeToggle
-              darkMode={darkMode}
-              toggleDarkMode={toggleDarkMode}
-              className="text-white"
-            />
-          </div>
-        </div>
-      </div>
+      </div>      
     </div>
   );
 }

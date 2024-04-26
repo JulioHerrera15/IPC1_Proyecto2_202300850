@@ -10,11 +10,13 @@ export interface CustomerEntry {
 }
 
 export interface PostsEntry {
-    codigo: string;
+    titulo: string;
     descripcion: string;
     categoria: string;
+    autor: string;
     anonimo: boolean;
     fecha: string;
+    likes: number;    
 }
 
 export interface AdminData{
@@ -23,5 +25,9 @@ export interface AdminData{
 }
 
 export interface CustomerData extends CustomerEntry {
+    id: number;
+}
+
+export interface PostsData extends PostsEntry {
     id: number;
 }

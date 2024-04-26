@@ -5,6 +5,7 @@ import { IoIosArrowBack } from "react-icons/io";
 import ColorModeToggle from './ColorModeToggle';
 import './index.css';
 import { useNavigate } from 'react-router-dom';
+import { printCustomers } from '../../backend/src/services/services';
 
 const Form = ({ darkMode, toggleDarkMode }) => {
   const [carnet, setCarnet] = useState('');
@@ -35,6 +36,7 @@ const Form = ({ darkMode, toggleDarkMode }) => {
       }
   
       const result = await response.json();
+      console.log(result);
       localStorage.setItem('user', JSON.stringify(result));
       if(result.isAdmin){
         navigate('/admin');
@@ -51,6 +53,7 @@ const Form = ({ darkMode, toggleDarkMode }) => {
   
   useEffect(() => {
       setIsLoaded(true);
+      printCustomers();
   }, []);
 
 

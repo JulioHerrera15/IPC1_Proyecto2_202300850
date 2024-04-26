@@ -69,7 +69,7 @@ export default function CreateAccount({ darkMode, toggleDarkMode }) {
         event.preventDefault();
 
         const data = {
-            carnet: parseInt(carnet),
+            carnet: carnet,
             nombres: nombres,
             apellidos: apellidos,
             genero: genero,

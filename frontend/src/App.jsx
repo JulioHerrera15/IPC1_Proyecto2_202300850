@@ -78,7 +78,7 @@ function App() {
         <Route path="/about" element={<About darkMode={darkMode} toggleDarkMode={toggleDarkMode} />} />
         <Route path="/contact" element={<Contact darkMode={darkMode} toggleDarkMode={toggleDarkMode} />} />
         <Route path="/user-home" element={<HomeUser darkMode={darkMode} toggleDarkMode={toggleDarkMode} />} />
-        <Route path="/crearpost" element={<CrearPublicacion darkMode={darkMode} toggleDarkMode={toggleDarkMode} />} />
+        <Route path="/crearpost/:id" element={<CrearPublicacion darkMode={darkMode} toggleDarkMode={toggleDarkMode} />} />
         <Route path="/customers/:id" element={<EditUser darkMode={darkMode} toggleDarkMode={toggleDarkMode} />} />
 
       </Routes>

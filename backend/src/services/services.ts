@@ -1,10 +1,10 @@
 import { dataCustomers, dataAdmin } from "./data";
-import { CustomerData, CustomerEntry, AdminData } from "../types"
-import env from 'dotenv';
-env.config();
+import { CustomerData, CustomerEntry, AdminData, PostsEntry, PostsData } from "../types" 
+
 
 export var customerData = dataCustomers;
 export var adminData = dataAdmin;
+export var publicaciones: PostsData[] = [];
 
 export const getCustomers = () => dataCustomers
 
@@ -46,7 +46,7 @@ export const deleteCustomer = (id: number) => {
     return true;
 }
 
-export const login = (carnet: string , password: string) => {
+export const login = (carnet: string , password: string) => {    
     const customer = customerData.find(c => c.carnet === carnet && c.password === password);    
     if(!customer){
         return null;
@@ -62,3 +62,19 @@ export const loginAdmin = (username: string, password: string) => {
     return admin;
 }
 
+export const crearPublicacion = (newPublicacion: PostsEntry, username: string) => {
+    var newId: number = 1;    
+    if(publicaciones.length > 0){
+        newId = publicaciones[publicaciones.length-1].id + 1;
+    }    
+    const { autor, ...rest } = newPublicacion;
+    const newDataPublicacion: PostsData = {id: newId, autor: username, ...rest};
+    publicaciones.push(newDataPublicacion);
+}
+
+export const getPublicaciones = () => publicaciones;
+
+
+export const printCustomers = () => {
+    console.log(customerData);
+}
