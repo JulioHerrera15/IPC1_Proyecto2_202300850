@@ -1,18 +1,20 @@
-import React, { useState, useEffect } from "react";
+import React from "react";
+import { useState } from "react";
 import UserFrameSideBar from "./UserFrameSideBar";
+import ColorModeToggle from "./ColorModeToggle";
 import { BiSolidLike } from "react-icons/bi";
 import { FaComment } from "react-icons/fa";
 import "./index.css";
-import ColorModeToggle from "./ColorModeToggle";
 import { IoMdSend } from "react-icons/io";
 
-function HomeUser({ darkMode, toggleDarkMode }) {
+function Tendencias({darkMode, toggleDarkMode}) {
   const [nombres, setNombres] = useState("");
   const [publicaciones, setPublicaciones] = useState([]);
 
   const getUser = async () => {
     const user = JSON.parse(localStorage.getItem("user"));
     const userId = user.id;
+    
 
     try {
       const response = await fetch(
@@ -51,29 +53,30 @@ function HomeUser({ darkMode, toggleDarkMode }) {
         return;
       }
 
-      const result = await response.json();
+      let result = await response.json();
+      // Ordenar las publicaciones por likes de mayor a menor
+      result = result.sort((a, b) => b.likes - a.likes);
       setPublicaciones(result);
     } catch (error) {
       console.log(error);
     }
   };
 
-  useEffect(() => {
+  React.useEffect(() => {
     getUser();
     getPublicaciones();
   }, []);
-
   return (
     <div className="dark:bg-slate-800 dark:text-white pt-40">
       <UserFrameSideBar />
       <h1 className="text-2xl font-bold text-center">¡Bienvenido {nombres}!</h1>
       <h2 className="text-xl font-bold text-center mt-10">
-        Estas son tus publicaciones y de otros usuarios:
+        ¡Estas son las tendencias dentro de USocial!
       </h2>
       <div className="flex flex-col items-center m-10">
         {publicaciones.length > 0 ? (
           [...publicaciones]
-            .reverse()
+             
             .map((publicacion) => (
               <Publicacion
                 key={publicacion.id}
@@ -108,7 +111,7 @@ function HomeUser({ darkMode, toggleDarkMode }) {
   );
 }
 
-export default HomeUser;
+export default Tendencias;
 
 function Publicacion({ publicacion, userId, darkMode }) {
   const [like, setLike] = React.useState(false);
@@ -308,8 +311,13 @@ function Publicacion({ publicacion, userId, darkMode }) {
             key={index}
           >
             <div className="flex justify-between">
-              <p className="text-lg font-bold">{comment.userName} <span className="text-sm">(Estudia {comment.carrera} en {comment.facultad})</span></p>
-              
+              <p className="text-lg font-bold">
+                {comment.userName}{" "}
+                <span className="text-sm">
+                  (Estudia {comment.carrera} en {comment.facultad})
+                </span>
+              </p>
+
               <p>{new Date(comment.fecha).toLocaleString()}</p>
             </div>
             <p className="text-lg mt-5">{comment.comentario}</p>

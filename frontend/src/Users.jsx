@@ -7,7 +7,6 @@ import { FaSignOutAlt } from "react-icons/fa";
 import { FaHome } from "react-icons/fa";
 import { FaUsers } from "react-icons/fa";
 import { MdOutlinePostAdd } from "react-icons/md";
-import { IoMdSettings } from "react-icons/io";
 import { GoPin } from "react-icons/go";
 import ColorModeToggle from "./ColorModeToggle";
 import { IoMdAddCircle } from "react-icons/io";
@@ -17,6 +16,8 @@ import { RiDeleteBin6Line } from "react-icons/ri";
 import { confirmAlert } from "react-confirm-alert";
 import "react-confirm-alert/src/react-confirm-alert.css";
 import { toast, ToastContainer } from "react-toastify";
+import { CSVLink } from "react-csv";
+import { FaFileExport } from "react-icons/fa";
 
 const SideBarContext = createContext();
 const Users = ({ darkMode, toggleDarkMode, children }) => {
@@ -24,6 +25,18 @@ const Users = ({ darkMode, toggleDarkMode, children }) => {
   const [pinned, setPinned] = useState(false);
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const [customers, setCustomers] = useState(null);
+
+  const headers = [
+    { label: "ID", key: "id" },
+    { label: "Código", key: "carnet" },
+    { label: "Nombres", key: "nombres" },
+    { label: "Apellidos", key: "apellidos" },
+    { label: "Género", key: "genero" },
+    { label: "Facultad", key: "facultad" },
+    { label: "Carrera", key: "carrera" },
+    { label: "Correo", key: "correo" },
+    { label: "Contraseña", key: "password" },
+  ];
 
   const getCustomers = async () => {
     try {
@@ -167,13 +180,8 @@ const Users = ({ darkMode, toggleDarkMode, children }) => {
                 icon="Publicaciones"
                 text="Publicaciones"
                 alert
-                to="/admin/posts"
-              />
-              <SideBarItems
-                icon="Configuración"
-                text="Configuración"
-                to="/admin/settings"
-              />
+                to="/admin/publicaciones"
+              />              
             </ul>
           </SideBarContext.Provider>
           <div className="border-t flex p-3 overflow-visible">
@@ -239,6 +247,20 @@ const Users = ({ darkMode, toggleDarkMode, children }) => {
         <header className="flex justify-between items-center bg-white dark:bg-slate-800 dark:text-white shadow-sm p-4 rounded-tl-3xl">
           <h2 className="font-semibold text-xl mt-2">Usuarios</h2>
         </header>
+        <div className="flex justify-center bg-white dark:bg-slate-800 items-center">
+          {customers && customers.length > 0 && (
+            <CSVLink
+            data={customers}
+            headers={headers}
+            filename={"usuarios.csv"}
+            className="bg-blue-500 hover:bg-blue-700 text-white font-bold m-2 py-2 px-4 rounded flex items-center justify-center"
+          >
+            Exportar tabla a CSV
+            <FaFileExport className="ml-2" />
+          </CSVLink>
+          )}
+        
+        </div>
         <section className="flex justify-between items-center bg-white dark:bg-slate-800 dark:text-white shadow-sm p-4">
           <table className="table-auto items-center justify-center m-auto border border-gray-200 dark:border-black">
             <thead className="bg-gray-100 dark:bg-slate-500 border border-gray-200 dark:border-black">
@@ -307,8 +329,7 @@ function SideBarItems({ icon, text, active, alert, to }) {
     Inicio: <FaHome size={20} />,
     Usuarios: <FaUsers size={20} />,
     Nuevo: <IoMdAddCircle size={20} />,
-    Publicaciones: <MdOutlinePostAdd size={20} />,
-    Configuración: <IoMdSettings size={20} />,
+    Publicaciones: <MdOutlinePostAdd size={20} />,    
   };
   return (
     <Link to={to}>

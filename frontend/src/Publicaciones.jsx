@@ -1,4 +1,4 @@
-import { React, useState, createContext, useContext } from "react";
+import { React, useState, useEffect, createContext, useContext } from "react";
 import imgLogo from "./assets/usocialLogo.png";
 import { RiPushpin2Line } from "react-icons/ri";
 import "./index.css";
@@ -11,21 +11,43 @@ import { GoPin } from "react-icons/go";
 import ColorModeToggle from "./ColorModeToggle";
 import { IoMdAddCircle } from "react-icons/io";
 import { Link } from "react-router-dom";
-import { Chart as ChartJS, CategoryScale, LinearScale, BarElement, ArcElement, Title, Tooltip, Legend }from "chart.js";
-import { DataMoreLikes } from "./DataMoreLikes";
-import { DataPostsByCategory } from "./DataPostsByCategory";
-import { DataUsersWithMostPosts } from "./DataUsersWithMostPosts";
-
-ChartJS.register(ArcElement, CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend);
+import { RiDeleteBin6Line } from "react-icons/ri";
+import { confirmAlert } from "react-confirm-alert";
+import "react-confirm-alert/src/react-confirm-alert.css";
+import { toast, ToastContainer } from "react-toastify";
+import { CSVLink } from "react-csv";
+import { FaFileExport } from "react-icons/fa6";
 
 const SideBarContext = createContext();
-const AdminFrame = ({ darkMode, toggleDarkMode, children }) => {
+const Publicaciones = ({ darkMode, toggleDarkMode, children }) => {
   const [expanded, setExpanded] = useState(false);
   const [pinned, setPinned] = useState(false);
-  const [dropdownOpen, setDropdownOpen] = useState(false);
-  const charData = DataMoreLikes();
-  const charData2 = DataPostsByCategory();
-  const charData3 = DataUsersWithMostPosts();
+  const [dropdownOpen, setDropdownOpen] = useState(false);  
+  const [publicaciones, setPublicaciones] = useState(null);
+
+  const headers = [
+    { label: "Titulo", key: "titulo" },
+    { label: "Descripcion", key: "descripcion" },
+    { label: "Categoria", key: "categoria" },
+    { label: "Nombre Real", key: "nombreReal" },
+    { label: "Anonimo", key: "anonimo" },
+    { label: "Fecha", key: "fecha" },
+  ];
+
+  const getPublicaciones = async () => {
+    try {
+      const response = await fetch("http://localhost:3000/getPublicaciones", {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+      const data = await response.json();
+      setPublicaciones(data);
+    } catch (error) {
+      alert("Error al solicitar las publicaciones");
+    }
+  };
 
   const toggleDropdown = () => {
     setDropdownOpen(!dropdownOpen);
@@ -42,11 +64,82 @@ const AdminFrame = ({ darkMode, toggleDarkMode, children }) => {
     window.location.href = "/login";
   };
 
+  const handleDelete = async (id) => {
+    confirmAlert({
+      overlayClassName: darkMode ? "custom-overlay-dark" : "",
+      customUI: ({ onClose }) => {
+        return (
+          <div className="custom-ui dark:text-white">
+            <h1 className="text-2xl font-bold items-center justify-center text-center m-6">
+              Confirmar eliminación
+            </h1>
+            <p>¿Estás seguro de que quieres eliminar esta publicación?</p>
+            <div className="mt-6 flex items-center justify-center">
+              <button
+                className="bg-black dark:bg-white dark:text-black text-white rounded py-2 px-5 mx-2 my-2"
+                onClick={onClose}
+              >
+                No
+              </button>
+              <button
+                className="bg-red-500 hover:bg-red-700 text-white rounded py-2 px-5 mx-2 my-2"
+                onClick={async () => {
+                  try {
+                    const response = await fetch(
+                      `http://localhost:3000/deletePost/${id}`,
+                      {
+                        method: "DELETE",
+                        headers: {
+                          "Content-Type": "application/json",
+                        },
+                      }
+                    );
+                    const result = await response.json();
+
+                    if (response.ok) {
+                      setPublicaciones(
+                        publicaciones.filter(
+                          (publicacion) => publicacion.id !== id
+                        )
+                      );
+                      toast.success(result.message, {
+                        position: "top-center",
+                        theme: darkMode ? "dark" : "light",
+                      });
+                    } else {
+                      throw new Error(result.message);
+                    }
+                  } catch (error) {
+                    toast.error(
+                      "Error al momento de eliminar la publicación: " +
+                        error.message,
+                      {
+                        position: "top-center",
+                        theme: darkMode ? "dark" : "light",
+                      }
+                    );
+                  }
+                  onClose();
+                }}
+              >
+                Sí
+              </button>
+            </div>
+          </div>
+        );
+      },
+    });
+  };
+  useEffect(() => {
+    getPublicaciones();
+  }, []);
+
   return (
     <div
       onClick={closeMenu}
       className="flex w-full min-h-screen dark:bg-slate-700"
     >
+      <ToastContainer />;
       <aside
         className={`fixed h-screen transition-all ${
           expanded ? "w-64" : "w-20"
@@ -73,15 +166,19 @@ const AdminFrame = ({ darkMode, toggleDarkMode, children }) => {
           </div>
           <SideBarContext.Provider value={{ expanded }}>
             <ul className="flex-1 px-3">
-              <SideBarItems icon="Inicio" text="Inicio" active to="/admin" />
+              <SideBarItems icon="Inicio" text="Inicio" to="/admin" />
               <SideBarItems icon="Nuevo" text="Cargar" to="/admin/carga" />
-              <SideBarItems icon="Usuarios" text="Usuarios" to="/admin/users" />
+              <SideBarItems
+                icon="Usuarios"
+                text="Usuarios"
+                to="/admin/users"
+              />
               <SideBarItems
                 icon="Publicaciones"
                 text="Publicaciones"
-                alert
                 to="/admin/publicaciones"
-              />
+                active
+              />              
             </ul>
           </SideBarContext.Provider>
           <div className="border-t flex p-3 overflow-visible">
@@ -145,39 +242,63 @@ const AdminFrame = ({ darkMode, toggleDarkMode, children }) => {
         }`}
       >
         <header className="flex justify-between items-center bg-white dark:bg-slate-800 dark:text-white shadow-sm p-4 rounded-tl-3xl">
-          <h2 className="font-semibold text-xl mt-2">Inicio</h2>
-          <h3 className="font-semibold text-xl mt-2">
-            Bienvenido David Maldonado
-          </h3>
+          <h2 className="font-semibold text-xl mt-2">Publicaciones</h2>
         </header>
-        <div className="bg-white flex items-center justify-center dark:bg-slate-800 dark:text-white">
-          <h1 className="font-md font-bold pt-5">
-            Una vista general sobre los datos actuales de USocial
-          </h1>
+        <div className="flex justify-center bg-white dark:bg-slate-800 items-center">
+        {publicaciones && publicaciones.length > 0 && (
+            <CSVLink
+            data={publicaciones}
+            headers={headers}
+            filename={"publicaciones.csv"}
+            className="bg-blue-500 hover:bg-blue-700 text-white font-bold m-2 py-2 px-4 rounded flex items-center justify-center"
+          >
+            Exportar tabla a CSV
+            <FaFileExport className="ml-2" />
+          </CSVLink>
+        )}
+        
         </div>
-        <section className="p-4 bg-white dark:bg-slate-800 ">
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-4">
-            <div className="bg-blue-100 dark:bg-blue-200 shadow-md p-4 rounded-xl">
-              <h1 className="text-xl font-semibold">
-                Publicaciones con más likes
-              </h1>
-              <DataMoreLikes className="m-5" />
-            </div>
-            <div className="bg-green-100 dark:bg-green-200 shadow-sm p-4 rounded-xl">
-              <h1 className="text-xl font-semibold">
-                Cantidad de posts por categoría
-              </h1>
-              <DataPostsByCategory className="m-5" />
-            </div>
-          </div>
-          <div className="grid grid-cols-1 gap-4 mt-4">
-            <div className="bg-purple-100 dark:bg-purple-200 shadow-sm p-4 rounded-xl">
-              <h1 className="text-xl font-semibold">
-                Usuarios con más publicaciones
-              </h1>
-              <DataUsersWithMostPosts className="m-5" />
-            </div>
-          </div>
+        <section className="flex justify-between items-center bg-white dark:bg-slate-800 dark:text-white shadow-sm p-4">
+        
+          <table className="table-auto items-center justify-center m-auto border border-gray-200 dark:border-black">
+            <thead className="bg-gray-100 dark:bg-slate-500 border border-gray-200 dark:border-black">
+              <tr className="border border-gray-200 dark:border-black">
+                <th className="p-2 ">Titulo</th>
+                <th className="p-2">Descripción</th>
+                <th className="p-2">Categoría</th>
+                <th className="p-2">Autor</th>
+                <th className="p-2">Anónimo</th>
+                <th className="p-2">Fecha y Hora</th>
+                <th className="p-2">Acciones</th>
+              </tr>
+            </thead>
+            <tbody className="border border-gray-200 dark:border-black">
+              {publicaciones &&
+                publicaciones.map((publicacion) => (
+                  <tr key={publicacion.id}>
+                    <td className="p-2">{publicacion.titulo}</td>
+                    <td className="p-2">{publicacion.descripcion}</td>
+                    <td className="p-2">{publicacion.categoria}</td>
+                    <td className="p-2">{publicacion.nombreReal}</td>
+                    <td className="p-2">{publicacion.anonimo ? "Sí" : "No"}</td>
+                    <td className="p-2">
+                      {new Date(publicacion.fecha).toLocaleString()}
+                    </td>
+
+                    <td>
+                      <button
+                        className="bg-red-500 text-white p-2 rounded-md m-2 flex items-center justify-center"
+                        type="button"
+                        onClick={() => handleDelete(publicacion.id)}
+                      >
+                        <RiDeleteBin6Line className="m-1" />
+                        Eliminar
+                      </button>
+                    </td>
+                  </tr>
+                ))}
+            </tbody>
+          </table>
         </section>
         {children}
         <footer className="bg-white dark:bg-slate-800 dark:text-white shadow-sm p-4 rounded-bl-3xl">
@@ -195,7 +316,7 @@ function SideBarItems({ icon, text, active, alert, to }) {
     Inicio: <FaHome size={20} />,
     Usuarios: <FaUsers size={20} />,
     Nuevo: <IoMdAddCircle size={20} />,
-    Publicaciones: <MdOutlinePostAdd size={20} />,
+    Publicaciones: <MdOutlinePostAdd size={20} />,    
   };
   return (
     <Link to={to}>
@@ -239,4 +360,4 @@ function SideBarItems({ icon, text, active, alert, to }) {
   );
 }
 
-export default AdminFrame;
+export default Publicaciones;

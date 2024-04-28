@@ -1,5 +1,6 @@
 import { dataCustomers, dataAdmin } from "./data";
 import { CustomerData, CustomerEntry, AdminData, PostsEntry, PostsData } from "../types" 
+import * as path from 'path'
 
 
 export var customerData = dataCustomers;
@@ -46,6 +47,18 @@ export const deleteCustomer = (id: number) => {
     return true;
 }
 
+export const deletePost = (id: number) => {
+    //Busca el índice donde el id coincida
+    const index = publicaciones.findIndex(c => c.id === id);
+    //Si no lo encuentra, retorna false
+    if(index === -1){
+        return false;
+    }
+    //Si lo encuentra, lo elimina
+    publicaciones.splice(index,1);
+    return true;
+}
+
 export const login = (carnet: string , password: string) => {    
     const customer = customerData.find(c => c.carnet === carnet && c.password === password);    
     if(!customer){
@@ -62,18 +75,22 @@ export const loginAdmin = (username: string, password: string) => {
     return admin;
 }
 
-export const crearPublicacion = (newPublicacion: PostsEntry, username: string) => {
+export const crearPublicacion = (newPublicacion: PostsEntry, username: string, career: string, school: string, imagen: string) => {
     var newId: number = 1;    
     if(publicaciones.length > 0){
         newId = publicaciones[publicaciones.length-1].id + 1;
     }    
-    const { autor, ...rest } = newPublicacion;
-    const newDataPublicacion: PostsData = {id: newId, autor: username, ...rest};
+
+    const { autor, carrera, facultad, likes, likesFrom, ...rest } = newPublicacion;
+
+    const newImagePath = path.join(__dirname, 'public', 'images', imagen);
+
+    // Usa la carrera y la facultad pasadas como argumentos
+    const newDataPublicacion: PostsData = {id: newId, autor: username, carrera: career, facultad: school, likes: 0, likesFrom,...rest};
     publicaciones.push(newDataPublicacion);
 }
 
 export const getPublicaciones = () => publicaciones;
-
 
 export const printCustomers = () => {
     console.log(customerData);

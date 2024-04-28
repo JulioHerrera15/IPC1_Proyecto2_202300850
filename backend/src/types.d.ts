@@ -1,4 +1,9 @@
-export interface CustomerEntry {
+export interface CommentEntry {
+    comentario: string;
+    userId: number;
+  }
+  
+  export interface CustomerEntry {
     carnet: string;
     nombres: string;
     apellidos: string;
@@ -7,27 +12,32 @@ export interface CustomerEntry {
     carrera: string;
     correo: string;
     password: string;
-}
-
-export interface PostsEntry {
+  }
+  
+  export interface PostsEntry {
     titulo: string;
     descripcion: string;
     categoria: string;
     autor: string;
+    carrera: string;
+    facultad: string;
     anonimo: boolean;
+    imagen: string;
     fecha: string;
-    likes: number;    
-}
-
-export interface AdminData{
+    likes: number;
+    likesFrom: string[];
+    comentarios: CommentEntry[];
+  }
+  
+  export interface AdminData{
     username: string;
     password: string;
-}
-
-export interface CustomerData extends CustomerEntry {
+  }
+  
+  export interface CustomerData extends CustomerEntry {
     id: number;
-}
-
-export interface PostsData extends PostsEntry {
+  }
+  
+  export interface PostsData extends PostsEntry {
     id: number;
-}
+  }

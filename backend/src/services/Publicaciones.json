@@ -1,0 +1,30 @@
+[
+    {
+        "id": 1,
+        "titulo": "Publicación 1",
+        "descripcion": "Esta es la descripción de la publicación 1",
+        "categoria": "Categoría 1",
+        "autor": "Autor 1",
+        "anonimo": false,        
+        "fecha": "2022-01-01"        
+    },
+    {   
+        "id": 2,
+        "titulo": "Publicación 2",
+        "descripcion": "Esta es la descripción de la publicación 2",
+        "categoria": "Categoría 2",
+        "autor": "Autor 2",
+        "anonimo": true,        
+        "fecha": "2024-02-02"       
+    },
+    {
+        "id": 3,
+        "titulo": "Publicación 3",
+        "descripcion": "Esta es la descripción de la publicación 3",
+        "categoria": "Categoría 3",
+        "autor": "Autor 3",
+        "anonimo": false,        
+        "fecha": "2022-03-03"      
+        
+    }
+]

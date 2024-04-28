@@ -15,7 +15,9 @@ import CargaMasivaUsuarios from './CargaMasiva';
 import Users from './Users';  
 import './index.css';
 import EditUser from './EditUser';
-
+import Publicaciones from './Publicaciones';
+import Tendencias from './Tendencias';
+import EditarPerfil from './EditarPerfil';
 
 function AnimationApp({ isLoggedIn, setIsLoggedIn, darkMode, toggleDarkMode }) { // Añade darkMode y toggleDarkMode como props
   let location = useLocation();
@@ -75,11 +77,14 @@ function App() {
         <Route path="/admin" element={<AdminFrame darkMode={darkMode} toggleDarkMode={toggleDarkMode} />} />
         <Route path="/admin/carga" element={<CargaMasivaUsuarios darkMode={darkMode} toggleDarkMode={toggleDarkMode} />} />
         <Route path="/admin/users" element={<Users darkMode={darkMode} toggleDarkMode={toggleDarkMode} />} />
+        <Route path="/admin/publicaciones" element={<Publicaciones darkMode={darkMode} toggleDarkMode={toggleDarkMode} />} />
         <Route path="/about" element={<About darkMode={darkMode} toggleDarkMode={toggleDarkMode} />} />
         <Route path="/contact" element={<Contact darkMode={darkMode} toggleDarkMode={toggleDarkMode} />} />
         <Route path="/user-home" element={<HomeUser darkMode={darkMode} toggleDarkMode={toggleDarkMode} />} />
         <Route path="/crearpost/:id" element={<CrearPublicacion darkMode={darkMode} toggleDarkMode={toggleDarkMode} />} />
         <Route path="/customers/:id" element={<EditUser darkMode={darkMode} toggleDarkMode={toggleDarkMode} />} />
+        <Route path="/tendencias" element={<Tendencias darkMode={darkMode} toggleDarkMode={toggleDarkMode} />} />
+        <Route path="/edit-profile/:id" element={<EditarPerfil darkMode={darkMode} toggleDarkMode={toggleDarkMode} />} />
 
       </Routes>
     </Router>

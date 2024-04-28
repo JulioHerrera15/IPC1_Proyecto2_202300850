@@ -5,6 +5,7 @@ import { FaBars } from "react-icons/fa";
 import { HiOutlineXMark } from "react-icons/hi2";
 import { Link } from "react-router-dom";
 import { FaPhoneAlt } from "react-icons/fa";
+import { MdEmail } from "react-icons/md";
 import './index.css';
 
 
@@ -62,12 +63,18 @@ function Contact({ darkMode, toggleDarkMode }) {
 
                     </div>                    
                 </div>
-                <div className="flex justify-center h-20">
-                <FaPhoneAlt className="text-blue-500 m-1" />
-                    <p className="text-gray-800 dark:text-white">
+                <div className="flex justify-center">
+                <FaPhoneAlt className="text-blue-500 text-xl m-1" />
+                    <p className="text-gray-800 text-xl dark:text-white">
                          Llámanos al: 1234-5678
                     </p>                    
-                </div>           
+                </div>
+                <div className="flex justify-center h-20">
+                <MdEmail className="text-blue-500 text-xl m-1"/>
+                    <p className="text-gray-800 text-xl dark:text-white">
+                         Correo: usocial@email.com
+                    </p>
+                </div>   
             </div>
             <div className="bg-gray-900 dark:bg-slate-900">
                 <div className="flex items-center justify-center h-20">

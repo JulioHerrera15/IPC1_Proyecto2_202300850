@@ -27,16 +27,16 @@ const CargaMasiva = ({ darkMode, toggleDarkMode, children }) => {
     if (file) {
       const reader = new FileReader();
       reader.onload = (e) => {
-        const _data = JSON.parse(e.target.result);        
+        const _data = JSON.parse(e.target.result);
         setData(_data);
       };
       reader.readAsText(file);
     }
   };
 
-  const handleUpload = async () => {
-    if(!data){
-      toast.warning("No hay datos para cargar");
+  const handleUploadUsers = async () => {
+    if (!data) {
+      toast.warning("No hay usuarios para cargar");
       return;
     }
     try {
@@ -47,19 +47,46 @@ const CargaMasiva = ({ darkMode, toggleDarkMode, children }) => {
         },
         body: JSON.stringify(data),
       });
-      if(response.ok){
-        toast.success("Datos cargados correctamente", {
+      if (response.ok) {
+        toast.success("Usuarios cargados correctamente", {
           position: "top-center",
           theme: darkMode ? "dark" : "light",
         });
-      }else{
-        toast.error("Error al cargar los datos");
+      } else {
+        toast.error("Error al cargar los usuarios");
       }
     } catch (error) {
       console.error(error);
-      toast.error("Error al cargar los datos", error);
+      toast.error("Error al cargar los usuarios", error);
     }
-  }; 
+  };
+
+  const handleUploadPosts = async () => {
+    if (!data) {
+      toast.warning("No hay publicaciones para cargar");
+      return;
+    }
+    try {
+      const response = await fetch("http://localhost:3000/crearPublicacion", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ publicacion: JSON.stringify(data) }),
+      });
+      if (response.ok) {
+        toast.success("Datos cargados correctamente", {
+          position: "top-center",
+          theme: darkMode ? "dark" : "light",
+        });        
+      } else {
+        toast.error("Error al cargar las publicaciones");
+      }
+    } catch (error) {
+      console.error(error);
+      toast.error("Error al cargar las publicaciones", error);
+    }
+  };
 
   const toggleDropdown = () => {
     setDropdownOpen(!dropdownOpen);
@@ -113,20 +140,15 @@ const CargaMasiva = ({ darkMode, toggleDarkMode, children }) => {
                 icon="Nuevo"
                 text="Cargar"
                 to="/admin/carga"
-                active
+                active                
               />
               <SideBarItems icon="Usuarios" text="Usuarios" to="/admin/users" />
               <SideBarItems
                 icon="Publicaciones"
                 text="Publicaciones"
                 alert
-                to="/admin/posts"
-              />
-              <SideBarItems
-                icon="Configuración"
-                text="Configuración"
-                to="/admin/settings"
-              />
+                to="/admin/publicaciones"
+              />              
             </ul>
           </SideBarContext.Provider>
           <div className="border-t flex p-3 overflow-visible">
@@ -193,7 +215,15 @@ const CargaMasiva = ({ darkMode, toggleDarkMode, children }) => {
           <h2 className="font-semibold text-xl mt-2">Carga masiva</h2>
         </header>
         <Tabs aria-label="Options" className="bg-white dark:bg-slate-800">
-        <Tab key="Usuarios" title={<span className="font-bold border-b-2 border-blue-500">Usuarios</span>} className="bg-white dark:bg-slate-800 dark:text-white">
+          <Tab
+            key="Usuarios"
+            title={
+              <span className="font-bold border-b-2 border-blue-500">
+                Usuarios
+              </span>
+            }
+            className="bg-white dark:bg-slate-800 dark:text-white"
+          >
             <Card>
               <CardBody>
                 <section className="flex-grow justify-between items-center bg-white dark:bg-slate-800 dark:text-white shadow-sm p-4">
@@ -257,11 +287,27 @@ const CargaMasiva = ({ darkMode, toggleDarkMode, children }) => {
                         ))}
                     </tbody>
                   </table>
+                  <div className="flex items-center justify-center bg-white dark:bg-slate-800">
+                    <button
+                      onClick={handleUploadUsers}
+                      className="bg-blue-500 text-white rounded-lg p-3 hover:bg-green-500 transition-all m-5"
+                    >
+                      Guardar Usuarios
+                    </button>
+                  </div>
                 </section>
               </CardBody>
             </Card>
           </Tab>
-          <Tab key="Publicaciones" title={<span className="font-bold border-b-2 border-green-500">Publicaciones</span>} className="bg-white dark:bg-slate-800 dark:text-white">
+          <Tab
+            key="Publicaciones"
+            title={
+              <span className="font-bold border-b-2 border-green-500">
+                Publicaciones
+              </span>
+            }
+            className="bg-white dark:bg-slate-800 dark:text-white"
+          >
             <Card>
               <CardBody>
                 <section className="flex-grow justify-between items-center bg-white dark:bg-slate-800 dark:text-white shadow-sm p-4">
@@ -283,11 +329,12 @@ const CargaMasiva = ({ darkMode, toggleDarkMode, children }) => {
                   <table className="table-auto items-center justify-center m-auto border border-gray-200 dark:border-black">
                     <thead className="bg-gray-100 dark:bg-slate-500 border border-gray-200 dark:border-black">
                       <tr className="border border-gray-200 dark:border-black">
-                        <th className="p-2">Código</th>
+                        <th className="p-2">ID</th>
+                        <th className="p-2">Título</th>
                         <th className="p-2">Descripción</th>
                         <th className="p-2">Categoría</th>
                         <th className="p-2">Anónimo</th>
-                        <th className="p-2">Fecha y Hora</th>                   
+                        <th className="p-2">Fecha y Hora</th>
                       </tr>
                     </thead>
                     <tbody className="border border-gray-200 dark:border-black">
@@ -295,7 +342,10 @@ const CargaMasiva = ({ darkMode, toggleDarkMode, children }) => {
                         data.map((post, index) => (
                           <tr key={index}>
                             <td className="p-2 border border-gray-200 dark:border-black">
-                              {post.codigo}
+                              {post.id}
+                            </td>
+                            <td className="p-2 border border-gray-200 dark:border-black">
+                              {post.titulo}
                             </td>
                             <td className="p-2 border border-gray-200 dark:border-black">
                               {post.descripcion}
@@ -304,24 +354,29 @@ const CargaMasiva = ({ darkMode, toggleDarkMode, children }) => {
                               {post.categoria}
                             </td>
                             <td className="p-2 border border-gray-200 dark:border-black">
-                              {post.anonimo}
+                              {post.anonimo ? "Sí" : "No"}
                             </td>
                             <td className="p-2 border border-gray-200 dark:border-black">
                               {post.fecha}
-                            </td>                
+                            </td>
                           </tr>
                         ))}
                     </tbody>
                   </table>
+                  <div className="flex items-center justify-center bg-white dark:bg-slate-800">
+                    <button
+                      onClick={handleUploadPosts}
+                      className="bg-blue-500 text-white rounded-lg p-3 hover:bg-green-500 transition-all m-5"
+                    >
+                      Guardar publicaciones
+                    </button>
+                  </div>
                 </section>
               </CardBody>
             </Card>
           </Tab>
         </Tabs>
-        <div className="flex items-center justify-center bg-white dark:bg-slate-800">
-        <button onClick={handleUpload} className="bg-blue-500 text-white rounded-lg p-3 hover:bg-green-500 transition-all m-5">Guardar</button>
-        </div>
-        
+
         {children}
         <footer className="bg-white dark:bg-slate-800 dark:text-white shadow-sm p-4 rounded-bl-3xl">
           <p className="text-sm text-gray-600 dark:text-white">
@@ -338,8 +393,7 @@ function SideBarItems({ icon, text, active, alert, to }) {
     Inicio: <FaHome size={20} />,
     Usuarios: <FaUsers size={20} />,
     Nuevo: <IoMdAddCircle size={20} />,
-    Publicaciones: <MdOutlinePostAdd size={20} />,
-    Configuración: <IoMdSettings size={20} />,
+    Publicaciones: <MdOutlinePostAdd size={20} />,    
   };
   return (
     <Link to={to}>

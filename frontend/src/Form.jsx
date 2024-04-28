@@ -44,7 +44,7 @@ const Form = ({ darkMode, toggleDarkMode }) => {
         navigate('/user-home');
       }
     } catch (error) {
-      const result = JSON.parse(error.message);
+      const result = JSON.parse(error.message);s
       setServerMessage(result.message);
     }
   }
